@@ -68,8 +68,8 @@ define(async (load) => {
             background: #282a36 !important;
         }
         </style>
-        <link rel="stylesheet" href="github-markdown.css">
-        <link rel="stylesheet" href="highlight/hljs-dark.css">
+        <link rel="stylesheet" href="./github-markdown.css">
+        <link rel="stylesheet" href="./highlight/hljs-dark.css">
         <div xv-content style="display:none;"></div>
         <div xv-tar="mdShower" class="markdown-body"></div>
         `,
