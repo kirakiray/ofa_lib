@@ -25,11 +25,11 @@ XDFrame加载完成后，添加 `$/markdown` 库；
 接下来就可以直接在html问价内使用了；
 
 ```html
-<markdown xv-ele>
+<m-md>
     # 我是markdown标题
 
     ## 二级标题
-</markdown>
+</m-md>
 ```
 
 在html内使用时，请不要直接添加 element 标签的展示代码；
@@ -37,15 +37,15 @@ XDFrame加载完成后，添加 `$/markdown` 库；
 可以采用外部资源方式添加；
 
 ```html
-<markdown xv-ele src="README.md">
+<m-md src="README.md">
     正在请求数据中；
-</markdown>
+</m-md>
 ```
 
 主体数据在实例化对象的 `mdData`内；
 
 ```javascript
-$('markdown').mdData  // => 得到标签的markdown原始文本
+$('m-md').mdData  // => 得到标签的markdown原始文本
 
-$('markdown').mdData = `# title ...`; // => 直接设置 markdown 的内部文本
+$('m-md').mdData = `# title ...`; // => 直接设置 markdown 的内部文本
 ```

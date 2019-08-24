@@ -13,7 +13,7 @@ define(async (load) => {
 
     // 注册markdown标签
     $.register({
-        tag: "m-md",
+        tag: "xd-md",
         data: {
             mdData: "",
             src: ""
