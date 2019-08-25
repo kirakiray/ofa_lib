@@ -1,4 +1,4 @@
-define(async (load) => {
+define(async (load, exports, modules, moduleData) => {
     let srcs = ["./markdown.css"];
 
     if (!window.marked) {
@@ -63,13 +63,13 @@ define(async (load) => {
             }
         },
         temp: `
+        <link rel="stylesheet" href="${moduleData.DIR}/github-markdown.css">
+        <link rel="stylesheet" href="${moduleData.DIR}/highlight/hljs-dark.css">
         <style>
         pre {
             background: #282a36 !important;
         }
         </style>
-        <link rel="stylesheet" href="./github-markdown.css">
-        <link rel="stylesheet" href="./highlight/hljs-dark.css">
         <div xv-content style="display:none;"></div>
         <div xv-tar="mdShower" class="markdown-body"></div>
         `,
