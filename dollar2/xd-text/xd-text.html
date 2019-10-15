@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>xd-text</title>
+    <script src="ok.js"></script>
+    <script src="../../dist/xdframe.js"></script>
+    <script>
+        load("./xd-text");
+    </script>
+</head>
+
+<body>
+    <xd-text key="testkey1" id="tar1">test1</xd-text>
+    <!-- <xd-text key="testkey2" id="tar2">test2</xd-text> -->
+    <script>
+        var tester = expect(3, 'xd-text test');
+        setTimeout(() => {
+            tester.ok($("#tar1").html === "", "html ok");
+
+            // 修改修改数据
+            let defaultData = xdtext.get("default");
+
+            // 改变数据
+            defaultData.testkey1 = "lalala";
+
+            setTimeout(() => {
+                // 是否修改
+                tester.ok($("#tar1").html === "lalala", "html ok 2");
+
+                // 替换原来的对象
+                xdtext.set({
+                    data: $.xdata({
+                        testkey1: "change testkey1"
+                    })
+                });
+
+                setTimeout(() => {
+                    tester.ok($("#tar1").html === "change testkey1", "html ok 3");
+                }, 1);
+            }, 1);
+        }, 300);
+    </script>
+</body>
+
+</html>

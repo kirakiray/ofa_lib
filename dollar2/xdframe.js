@@ -586,17 +586,18 @@
 
                 // 数据合并
                 Object.keys(obj).forEach(k => {
-                    if (/^\_/.test(k)) {
+                    // 值
+                    let value = obj[k];
+
+                    if (/^\_/.test(k) || value instanceof Element) {
                         // this[k] = obj[k];
                         Object.defineProperty(this, k, {
                             configurable: true,
                             writable: true,
-                            value: obj[k]
+                            value
                         });
                         return;
                     }
-                    // 值
-                    let value = obj[k];
 
                     if (!/\D/.test(k)) {
                         // 数字key进行length长度计算
@@ -1836,6 +1837,11 @@
 
         const parseToDom = (expr) => {
             let ele;
+
+            if (expr instanceof XhearEle) {
+                return expr.ele;
+            }
+
             switch (getType(expr)) {
                 case "string":
                     if (/\<.+\>/.test(expr)) {
@@ -1863,9 +1869,8 @@
             let tars = target.querySelectorAll(expr);
             return tars ? Array.from(tars) : [];
         }
-        // 可setData的key
-        const CANSETKEYS = Symbol("cansetkeys");
-        const ORIEVE = Symbol("orignEvents");
+
+        const isXhear = (target) => target instanceof XhearEle;
 
         // 将 element attribute 横杠转换为大小写模式
         const attrToProp = key => {
@@ -1881,9 +1886,15 @@
             }
             return key;
         }
+        // 可setData的key
+        const CANSETKEYS = Symbol("cansetkeys");
+        const ORIEVE = Symbol("orignEvents");
 
         // 可直接设置的Key
         const xEleDefaultSetKeys = new Set(["text", "html", "display", "style"]);
+
+        // 可直接设置的Key并且能冒泡
+        const xEleDefaultSetKeysCanUpdate = new Set(["text", "html"]);
 
         // 不可设置的key
         const UnSetKeys = new Set(["parent", "index", "slot"]);
@@ -2066,20 +2077,19 @@
 
                 let _this = this[XDATASELF];
 
-                if (/^_.+/.test(key)) {
-                    Object.defineProperty(this, key, {
-                        configurable: true,
-                        writable: true,
-                        value
-                    })
-                    return true;
-                }
-
                 // 只有在允许列表里才能进行set操作
                 let canSetKey = this[CANSETKEYS];
                 if (xEleDefaultSetKeys.has(key)) {
+                    let oldVal = _this[key];
+
                     // 直接设置
                     _this[key] = value;
+
+                    if (xEleDefaultSetKeysCanUpdate.has(key)) {
+                        emitUpdate(_this, "setData", [key, value], {
+                            oldValue: oldVal
+                        });
+                    }
                     return true;
                 } else if ((canSetKey && canSetKey.has(key)) || /^_.+/.test(key)) {
                     // 直接走xdata的逻辑
@@ -2809,184 +2819,187 @@
                 value: true
             });
 
-            // 添加shadow root
-            let sroot = ele.attachShadow({
-                mode: "open"
-            });
-
-            // 填充默认内容
-            sroot.innerHTML = defaults.temp;
-
-            // 设置其他 xv-tar
-            queAllToArray(sroot, `[xv-tar]`).forEach(tar => {
-                // Array.from(sroot.querySelectorAll(`[xv-tar]`)).forEach(tar => {
-                let tarKey = tar.getAttribute('xv-tar');
-                Object.defineProperty(xhearEle, "$" + tarKey, {
-                    get: () => createXhearEle(tar)
+            if (defaults.temp) {
+                // 添加shadow root
+                let sroot = ele.attachShadow({
+                    mode: "open"
                 });
-            });
 
-            // 转换 xv-span 元素
-            queAllToArray(sroot, `xv-span`).forEach(e => {
-                // 替换xv-span
-                var textnode = document.createTextNode("");
-                e.parentNode.insertBefore(textnode, e);
-                e.parentNode.removeChild(e);
+                // 填充默认内容
+                sroot.innerHTML = defaults.temp;
 
-                // 文本数据绑定
-                var xvkey = e.getAttribute('xvkey');
+                // 设置其他 xv-tar
+                queAllToArray(sroot, `[xv-tar]`).forEach(tar => {
+                    // Array.from(sroot.querySelectorAll(`[xv-tar]`)).forEach(tar => {
+                    let tarKey = tar.getAttribute('xv-tar');
+                    Object.defineProperty(xhearEle, "$" + tarKey, {
+                        get: () => createXhearEle(tar)
+                    });
+                });
 
-                // 先设置值，后监听
-                xhearEle.watch(xvkey, (e, val) => textnode.textContent = val);
-            });
+                // 转换 xv-span 元素
+                queAllToArray(sroot, `xv-span`).forEach(e => {
+                    // 替换xv-span
+                    var textnode = document.createTextNode("");
+                    e.parentNode.insertBefore(textnode, e);
+                    e.parentNode.removeChild(e);
 
-            // :attribute对子元素属性修正方法
-            queAllToArray(sroot, "*").forEach(ele => {
-                let attrbs = Array.from(ele.attributes);
-                attrbs.forEach(obj => {
-                    let {
-                        name,
-                        value
-                    } = obj;
-                    let prop = value;
+                    // 文本数据绑定
+                    var xvkey = e.getAttribute('xvkey');
 
-                    let matchArr = /^:(.+)/.exec(name);
-                    if (matchArr) {
-                        let attr = matchArr[1];
+                    // 先设置值，后监听
+                    xhearEle.watch(xvkey, (e, val) => textnode.textContent = val);
+                });
 
-                        // 判断是否双向绑定
-                        let isEachBinding = /^#(.+)/.exec(attr);
-                        if (isEachBinding) {
-                            attr = isEachBinding[1];
-                            isEachBinding = !!isEachBinding;
-                        }
+                // :attribute对子元素属性修正方法
+                queAllToArray(sroot, "*").forEach(ele => {
+                    let attrbs = Array.from(ele.attributes);
+                    attrbs.forEach(obj => {
+                        let {
+                            name,
+                            value
+                        } = obj;
+                        let prop = value;
+                        name = attrToProp(name);
 
-                        let watchCall;
-                        if (ele.xvele) {
-                            watchCall = (e, val) => {
-                                if (val instanceof XhearEle) {
-                                    val = val.Object;
-                                }
-                                createXhearEle(ele).setData(attr, val);
-                            }
+                        let matchArr = /^:(.+)/.exec(name);
+                        if (matchArr) {
+                            let attr = matchArr[1];
 
-                            // 双向绑定
+                            // 判断是否双向绑定
+                            let isEachBinding = /^#(.+)/.exec(attr);
                             if (isEachBinding) {
-                                createXhearEle(ele).watch(attr, (e, val) => {
-                                    xhearEle.setData(prop, val);
-                                });
+                                attr = isEachBinding[1];
+                                isEachBinding = !!isEachBinding;
                             }
-                        } else {
-                            watchCall = (e, val) => ele.setAttribute(attr, val);
+
+                            let watchCall;
+                            if (ele.xvele) {
+                                watchCall = (e, val) => {
+                                    if (val instanceof XhearEle) {
+                                        val = val.Object;
+                                    }
+                                    createXhearEle(ele).setData(attr, val);
+                                }
+
+                                // 双向绑定
+                                if (isEachBinding) {
+                                    createXhearEle(ele).watch(attr, (e, val) => {
+                                        xhearEle.setData(prop, val);
+                                    });
+                                }
+                            } else {
+                                watchCall = (e, val) => ele.setAttribute(attr, val);
+                            }
+                            xhearEle.watch(prop, watchCall)
                         }
-                        xhearEle.watch(prop, watchCall)
-                    }
+                    });
                 });
-            });
 
-            // 需要跳过的元素列表
-            let xvModelJump = new Set();
+                // 需要跳过的元素列表
+                let xvModelJump = new Set();
 
-            // 绑定 xv-model
-            queAllToArray(sroot, `[xv-model]`).forEach(ele => {
-                if (xvModelJump.has(ele)) {
-                    return;
-                }
+                // 绑定 xv-model
+                queAllToArray(sroot, `[xv-model]`).forEach(ele => {
+                    if (xvModelJump.has(ele)) {
+                        return;
+                    }
 
-                let modelKey = ele.getAttribute("xv-model");
+                    let modelKey = ele.getAttribute("xv-model");
 
-                switch (ele.tagName.toLowerCase()) {
-                    case "input":
-                        let inputType = ele.getAttribute("type");
-                        switch (inputType) {
-                            case "checkbox":
-                                // 判断是不是复数形式的元素
-                                let allChecks = queAllToArray(sroot, `input[type="checkbox"][xv-model="${modelKey}"]`);
+                    switch (ele.tagName.toLowerCase()) {
+                        case "input":
+                            let inputType = ele.getAttribute("type");
+                            switch (inputType) {
+                                case "checkbox":
+                                    // 判断是不是复数形式的元素
+                                    let allChecks = queAllToArray(sroot, `input[type="checkbox"][xv-model="${modelKey}"]`);
 
-                                // 查看是单个数量还是多个数量
-                                if (allChecks.length > 1) {
-                                    allChecks.forEach(checkbox => {
-                                        checkbox.addEventListener('change', e => {
+                                    // 查看是单个数量还是多个数量
+                                    if (allChecks.length > 1) {
+                                        allChecks.forEach(checkbox => {
+                                            checkbox.addEventListener('change', e => {
+                                                let {
+                                                    value,
+                                                    checked
+                                                } = e.target;
+
+                                                let tarData = xhearEle.getData(modelKey);
+                                                if (checked) {
+                                                    tarData.add(value);
+                                                } else {
+                                                    tarData.delete(value);
+                                                }
+                                            });
+                                        });
+
+                                        // 添加到跳过列表里
+                                        allChecks.forEach(e => {
+                                            xvModelJump.add(e);
+                                        })
+                                    } else {
+                                        // 单个直接绑定checked值
+                                        xhearEle.watch(modelKey, (e, val) => {
+                                            ele.checked = val;
+                                        });
+                                        ele.addEventListener("change", e => {
                                             let {
-                                                value,
                                                 checked
-                                            } = e.target;
+                                            } = ele;
+                                            xhearEle.setData(modelKey, checked);
+                                        });
+                                    }
+                                    return;
+                                case "radio":
+                                    let allRadios = queAllToArray(sroot, `input[type="radio"][xv-model="${modelKey}"]`);
 
-                                            let tarData = xhearEle.getData(modelKey);
-                                            if (checked) {
-                                                tarData.add(value);
-                                            } else {
-                                                tarData.delete(value);
+                                    let rid = getRandomId();
+
+                                    allRadios.forEach(radioEle => {
+                                        radioEle.setAttribute("name", `radio_${modelKey}_${rid}`);
+                                        radioEle.addEventListener("change", e => {
+                                            if (radioEle.checked) {
+                                                xhearEle.setData(modelKey, radioEle.value);
                                             }
                                         });
                                     });
-
-                                    // 添加到跳过列表里
-                                    allChecks.forEach(e => {
-                                        xvModelJump.add(e);
-                                    })
-                                } else {
-                                    // 单个直接绑定checked值
-                                    xhearEle.watch(modelKey, (e, val) => {
-                                        ele.checked = val;
-                                    });
-                                    ele.addEventListener("change", e => {
-                                        let {
-                                            checked
-                                        } = ele;
-                                        xhearEle.setData(modelKey, checked);
-                                    });
-                                }
-                                return;
-                            case "radio":
-                                let allRadios = queAllToArray(sroot, `input[type="radio"][xv-model="${modelKey}"]`);
-
-                                let rid = getRandomId();
-
-                                allRadios.forEach(radioEle => {
-                                    radioEle.setAttribute("name", `radio_${modelKey}_${rid}`);
-                                    radioEle.addEventListener("change", e => {
-                                        if (radioEle.checked) {
-                                            xhearEle.setData(modelKey, radioEle.value);
-                                        }
-                                    });
-                                });
-                                return;
-                        }
-                        // 其他input 类型继续往下走
-                        case "textarea":
-                            xhearEle.watch(modelKey, (e, val) => {
-                                ele.value = val;
-                            });
-                            ele.addEventListener("input", e => {
-                                xhearEle.setData(modelKey, ele.value);
-                            });
-                            break;
-                        case "select":
-                            xhearEle.watch(modelKey, (e, val) => {
-                                ele.value = val;
-                            });
-                            ele.addEventListener("change", e => {
-                                xhearEle.setData(modelKey, ele.value);
-                            });
-                            break;
-                        default:
-                            // 自定义组件
-                            if (ele.xvele) {
-                                let cEle = ele.__xhear__;
-                                cEle.watch("value", (e, val) => {
-                                    xhearEle.setData(modelKey, val);
-                                });
-                                xhearEle.watch(modelKey, (e, val) => {
-                                    cEle.setData("value", val);
-                                });
-                            } else {
-                                console.warn(`can't xv-model with thie element => `, ele);
+                                    return;
                             }
-                }
-            });
-            xvModelJump.clear();
-            xvModelJump = null;
+                            // 其他input 类型继续往下走
+                            case "textarea":
+                                xhearEle.watch(modelKey, (e, val) => {
+                                    ele.value = val;
+                                });
+                                ele.addEventListener("input", e => {
+                                    xhearEle.setData(modelKey, ele.value);
+                                });
+                                break;
+                            case "select":
+                                xhearEle.watch(modelKey, (e, val) => {
+                                    ele.value = val;
+                                });
+                                ele.addEventListener("change", e => {
+                                    xhearEle.setData(modelKey, ele.value);
+                                });
+                                break;
+                            default:
+                                // 自定义组件
+                                if (ele.xvele) {
+                                    let cEle = ele.__xhear__;
+                                    cEle.watch("value", (e, val) => {
+                                        xhearEle.setData(modelKey, val);
+                                    });
+                                    xhearEle.watch(modelKey, (e, val) => {
+                                        cEle.setData("value", val);
+                                    });
+                                } else {
+                                    console.warn(`can't xv-model with thie element => `, ele);
+                                }
+                    }
+                });
+                xvModelJump.clear();
+                xvModelJump = null;
+            }
 
             // watch事件绑定
             xhearEle.watch(defaults.watch);
@@ -3026,6 +3039,7 @@
                     let {
                         name
                     } = e;
+                    name = attrToProp(name);
                     if (!/^xv\-/.test(name) && !/^:/.test(name) && canSetKey.has(name)) {
                         rData[name] = e.value;
                     }
@@ -3077,9 +3091,10 @@
         Object.assign($, {
             register,
             nextTick,
-            xdata: obj => createXData(obj),
+            xdata: obj => createXData(obj)[PROXYTHIS],
             versinCode: 5000000,
-            fn: XhearEleFn
+            fn: XhearEleFn,
+            isXhear
         });
 
         glo.$ = $;
@@ -3372,7 +3387,6 @@
         loaders.set("js", (packData) => {
             // 主体script
             let script = document.createElement('script');
-
 
             //填充相应数据
             script.type = 'text/javascript';
@@ -4121,7 +4135,7 @@
         processors.set("component", async packData => {
             let defaults = {
                 // 默认模板
-                temp: true,
+                temp: false,
                 // 加载组件样式
                 link: true,
                 // 与组件同域下的样式
@@ -4130,8 +4144,8 @@
                 onload() {},
                 // 组件初始化完毕时
                 inited() {},
-                // 依赖子组件目录
-                useComps: []
+                // 依赖子模块
+                use: []
             };
 
             // load方法
@@ -4140,6 +4154,15 @@
             // 合并默认参数
             Object.assign(defaults, base.tempM.d);
 
+            // 获取文件名
+            let fileName = packData.path.match(/.+\/(.+)/)[1];
+            fileName = fileName.replace(/\.js$/, "");
+
+            // 添加子组件
+            if (defaults.use && defaults.use.length) {
+                await load(...defaults.use);
+            }
+
             // 执行onload
             await defaults.onload({
                 load,
@@ -4147,36 +4170,43 @@
                 FILE: packData.path
             });
 
-            // 获取文件名
-            let fileName = packData.path.match(/.+\/(.+)/)[1];
-            fileName = fileName.replace(/\.js$/, "");
-
-            // 添加子组件
-            if (defaults.useComps && defaults.useComps.length) {
-                await load(...defaults.useComps);
-            }
-
             // 置换temp
             let temp = "";
             if (defaults.temp) {
-                let path = await load(`./${fileName}.html -getPath`);
-                temp = await fetch(path);
-                temp = await temp.text();
-            }
+                // 判断是否有换行
+                if (/\n/.test(defaults.temp)) {
+                    // 拥有换行，是模板字符串
+                    temp = defaults.temp;
+                } else {
+                    let path;
+                    if (defaults.temp === true) {
+                        path = await load(`./${fileName}.html -getPath`)
+                    } else {
+                        // path = defaults.temp;
+                        path = await load(`${defaults.temp} -getPath`);
+                    }
+                    temp = await fetch(path);
+                    temp = await temp.text();
+                }
 
-            // 添加link
-            if (defaults.link) {
-                let linkPath = await load(`./${fileName}.css -getPath`);
-                temp = `<link rel="stylesheet" href="${linkPath}">\n` + temp;
+                // 添加link
+                let linkPath = defaults.link;
+                if (defaults.link === true) {
+                    linkPath = await load(`./${fileName}.css -getPath`);
+                } else {
+                    linkPath = await load(`${defaults.link} -getPath`);
+                }
+                linkPath && (temp = `<link rel="stylesheet" href="${linkPath}">\n` + temp);
             }
 
             defaults.temp = temp;
 
             // inited钩子
-            let oldInited = defaults.inited;
-            defaults.inited = async function(...args) {
-                // 添加hostlink
-                if (defaults.hostlink) {
+            if (defaults.hostlink) {
+                let oldInited = defaults.inited;
+
+                defaults.inited = async function(...args) {
+                    // 添加hostlink
                     // 获取元素域上的主
                     let root = this.ele.getRootNode();
 
@@ -4193,10 +4223,10 @@
                             root.appendChild(linkEle.ele);
                         }
                     }
-                }
 
-                // 执行inited方法
-                oldInited.apply(this, args);
+                    // 执行inited方法
+                    oldInited.apply(this, args);
+                }
             }
 
             // 注册节点
