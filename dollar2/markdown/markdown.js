@@ -1,4 +1,4 @@
-define(async (load, exports, modules, moduleData) => {
+Component(async (load, moduleData) => {
     let srcs = ["./markdown.css"];
 
     if (!window.marked) {
@@ -12,7 +12,7 @@ define(async (load, exports, modules, moduleData) => {
     await load(...srcs);
 
     // 注册markdown标签
-    $.register({
+    return {
         tag: "xd-md",
         data: {
             mdData: "",
@@ -79,5 +79,5 @@ define(async (load, exports, modules, moduleData) => {
             // 获取content的内容
             this.mdData = text.trim();
         }
-    });
+    };
 });
