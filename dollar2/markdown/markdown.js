@@ -73,7 +73,7 @@ Component(async (load, moduleData) => {
         <div xv-content style="display:none;"></div>
         <div xv-tar="mdShower" class="markdown-body"></div>
         `,
-        inited() {
+        ready() {
             let text = this.text;
 
             // 获取content的内容
