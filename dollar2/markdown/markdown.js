@@ -1,5 +1,5 @@
 Component(async (load, moduleData) => {
-    let srcs = ["./markdown.css"];
+    let srcs = [];
 
     if (!window.marked) {
         srcs.push("./marked.min.js");
@@ -9,7 +9,9 @@ Component(async (load, moduleData) => {
         srcs.push("./highlight/highlight.min.js");
     }
 
-    await load(...srcs);
+    if (srcs.length) {
+        await load(...srcs);
+    }
 
     // 注册markdown标签
     return {
@@ -18,6 +20,7 @@ Component(async (load, moduleData) => {
             mdData: "",
             src: ""
         },
+        css: true,
         attrs: ["src"],
         watch: {
             async src(e, val) {
@@ -63,21 +66,41 @@ Component(async (load, moduleData) => {
             }
         },
         temp: `
-        <link rel="stylesheet" href="${moduleData.DIR}/github-markdown.css">
-        <link rel="stylesheet" href="${moduleData.DIR}/highlight/hljs-dark.css">
-        <style>
-        pre {
-            background: #282a36 !important;
-        }
-        </style>
-        <div xv-content style="display:none;"></div>
         <div xv-tar="mdShower" class="markdown-body"></div>
         `,
         ready() {
-            let text = this.text;
+            if (this.$("template")) {
+                // 获取content的内容
+                let html = this.$("template").html;
 
-            // 获取content的内容
-            this.mdData = text.trim();
+                let htmlArr = html.split(/\n/g);
+
+                // 查找第一行有内容的
+                let line_one, line_id = 0;
+                while (true) {
+                    line_one = htmlArr[line_id];
+                    if (line_one.trim()) {
+                        break;
+                    }
+                    line_id++;
+                }
+
+                // 数一数前面有多少个空格
+                let space_match = line_one.match(/^\s+/);
+                if (space_match) {
+                    let space_str = space_match[0];
+
+                    // 每一行前面都去除相同长度的空格
+                    let reg = new RegExp(`^${space_str}`);
+                    htmlArr = htmlArr.map(str => {
+                        return str.replace(reg, "");
+                    });
+
+                    html = htmlArr.join("\n");
+                }
+
+                this.mdData = html;
+            }
         }
     };
 });

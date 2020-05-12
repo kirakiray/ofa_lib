@@ -1,3 +1,9 @@
+@import "github-markdown.css";
+@import "highlight/default.min.css";
+@import "highlight/hljs-dark.css";
 m-md {
   display: block;
+}
+pre {
+  background: #282a36 !important;
 }
