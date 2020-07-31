@@ -20,7 +20,6 @@ Component(async (load, moduleData) => {
             mdData: "",
             src: ""
         },
-        css: true,
         attrs: ["src"],
         watch: {
             async src(e, val) {
@@ -66,7 +65,8 @@ Component(async (load, moduleData) => {
             }
         },
         temp: `
-        <div xv-tar="mdShower" class="markdown-body"></div>
+        <link rel="stylesheet" href="./markdown.css">
+        <div $="mdShower" class="markdown-body"></div>
         `,
         ready() {
             if (this.$("template")) {
