@@ -1,3 +1,3 @@
 # ofa lib
 
-用来存放公用 ofa Components 的仓库
+用来存放官方 ofa Components 的仓库

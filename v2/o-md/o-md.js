@@ -2,11 +2,12 @@ Component(async (load, moduleData) => {
     let srcs = [];
 
     if (!window.marked) {
-        srcs.push("./marked.min.js");
+        srcs.push("../libs/markedjs/marked.min.js");
     }
 
     if (!window.hljs) {
-        srcs.push("./highlight/highlight.min.js");
+        // srcs.push("./highlight/highlight.min.js");
+        srcs.push("../libs/highlight/highlight.min.js");
     }
 
     if (srcs.length) {
@@ -15,7 +16,7 @@ Component(async (load, moduleData) => {
 
     // 注册markdown标签
     return {
-        tag: "xd-md",
+        tag: "o-md",
         data: {
             mdData: "",
             src: ""
@@ -66,6 +67,8 @@ Component(async (load, moduleData) => {
         },
         temp: `
         <link rel="stylesheet" href="./markdown.css">
+        <link rel="stylesheet" href="../libs/highlight/default.min.css">
+        <link rel="stylesheet" href="../libs/highlight/hljs-dark.css">
         <div $="mdShower" class="markdown-body"></div>
         `,
         ready() {
