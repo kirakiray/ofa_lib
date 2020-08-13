@@ -828,6 +828,32 @@
             }
 
             /**
+             *  深度清除当前对象，所有子对象数据也会被深度清除
+             */
+            deepClear() {
+                // 清除非数字键
+                Object.keys(this).forEach(key => {
+                    if (/\D/.test(key)) {
+                        let obj = this[key];
+
+                        if (obj instanceof XData) {
+                            obj.deepClear();
+                        }
+                    }
+                });
+
+                // 数组键内深度清除对象
+                this.forEach(obj => {
+                    if (obj instanceof XData) {
+                        obj.deepClear();
+                    }
+                });
+
+                // 清除自身
+                clearXData(this);
+            }
+
+            /**
              * 从 Set 参考的方法，push的去从版
              * @param {*} value 需要添加的数据
              */
@@ -3349,7 +3375,11 @@ with(this){
                                     event.bubble = false;
                                 }
 
-                                func.call(xhearEle[PROXYTHIS], event, data);
+                                if (isFunction(func)) {
+                                    func.call(xhearEle[PROXYTHIS], event, data);
+                                } else if (!func) {
+                                    console.warn(xhearEle[PROXYTHIS], `bind ${functionName} is not function`);
+                                }
                             });
                         }
                     });

@@ -1,5 +1,9 @@
 Component(async (load) => {
-    const transToHtml = await load("./transToHtml");
+    // const transToHtml = await load("./transToHtml");
+
+    if (!window.hljs) {
+        await load("../libs/highlight/highlight.min.js");
+    }
 
     return {
         tag: "comp-view",
@@ -123,7 +127,15 @@ Component(async (load) => {
                     codeText = codeText.replace(/=""/g, "");
                     codeText = codeText.replace(/=''/g, "");
 
-                    this.$codeEle.html = transToHtml(codeText);
+
+                    // 转义特殊字符
+                    codeText = codeText.replace(/</g, "&lt;");
+                    codeText = codeText.replace(/>/g, "&gt;");
+
+                    this.$codeEle.html = codeText;
+
+                    // 高亮区域的代码
+                    hljs.highlightBlock(this.$codeEle.ele);
                 });
             },
             _init() {
