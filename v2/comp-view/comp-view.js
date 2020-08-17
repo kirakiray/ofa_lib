@@ -1,9 +1,8 @@
 Component(async (load) => {
     // const transToHtml = await load("./transToHtml");
 
-    if (!window.hljs) {
-        await load("../libs/highlight/highlight.min.js");
-    }
+    await load("../libs/highlight/highlight.min.js");
+    await load("../libs/beautify/beautify-html");
 
     return {
         tag: "comp-view",
@@ -127,10 +126,12 @@ Component(async (load) => {
                     codeText = codeText.replace(/=""/g, "");
                     codeText = codeText.replace(/=''/g, "");
 
+                    codeText = html_beautify(codeText);
 
                     // 转义特殊字符
                     codeText = codeText.replace(/</g, "&lt;");
                     codeText = codeText.replace(/>/g, "&gt;");
+                    codeText = codeText.replace(/\n/g, "<br/>");
 
                     this.$codeEle.html = codeText;
 
