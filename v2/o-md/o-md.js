@@ -17,14 +17,19 @@ Component(async (load, moduleData) => {
     // 注册markdown标签
     return {
         tag: "o-md",
+        attrs: {
+            src: "",
+            loaded: "1"
+        },
         data: {
             mdData: "",
-            src: ""
         },
-        attrs: ["src"],
         watch: {
             async src(e, val) {
                 if (val) {
+                    // 去掉指定属性
+                    this.loaded = null;
+
                     // 手动请求元素
                     let readme = await fetch(val);
 
@@ -33,6 +38,8 @@ Component(async (load, moduleData) => {
 
                     // 直接塞入
                     this.mdData = readme;
+
+                    this.loaded = "1";
                 }
             },
             mdData(e, context) {
