@@ -66,7 +66,11 @@ Component(async (load, moduleData) => {
 
                 // 高亮
                 this.$mdShower.ele.querySelectorAll('pre code').forEach((block) => {
-                    hljs.highlightBlock(block);
+                    if (block.getAttribute("class")) {
+                        hljs.highlightBlock(block);
+                    } else {
+                        block.style.color = "#fff";
+                    }
                 });
 
                 this.text = "";
