@@ -4,9 +4,9 @@ Component(async (load) => {
 
         // 加载美化库
         // await load(`https://cdn.rawgit.com/beautify-web/js-beautify/v1.12.0/js/lib/beautify.js`, `https://cdn.rawgit.com/beautify-web/js-beautify/v1.12.0/js/lib/beautify-css.js`, `https://cdn.rawgit.com/beautify-web/js-beautify/v1.12.0/js/lib/beautify-html.js`);
-
-        await load("../libs/beautify/beautify", "../libs/beautify/beautify-css", "../libs/beautify/beautify-html");
     }
+
+    await load("../libs/beautify/beautify", "../libs/beautify/beautify-css", "../libs/beautify/beautify-html");
 
     return {
         tag: "o-code",
