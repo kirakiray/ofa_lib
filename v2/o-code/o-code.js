@@ -1,9 +1,6 @@
 Component(async (load) => {
     if (!window.hljs) {
-        await load("../libs/highlight/highlight.min.js");
-
-        // 加载美化库
-        // await load(`https://cdn.rawgit.com/beautify-web/js-beautify/v1.12.0/js/lib/beautify.js`, `https://cdn.rawgit.com/beautify-web/js-beautify/v1.12.0/js/lib/beautify-css.js`, `https://cdn.rawgit.com/beautify-web/js-beautify/v1.12.0/js/lib/beautify-html.js`);
+        await load("../libs/highlight -p");
     }
 
     await load("../libs/beautify/beautify", "../libs/beautify/beautify-css", "../libs/beautify/beautify-html");
@@ -14,7 +11,9 @@ Component(async (load) => {
         props: {
             lang: "html"
         },
-        data: {},
+        data: {
+            // hljs用的样式文件
+        },
         ready() {
             // 获取templte的内容并设置
             let tempCode = this.$("template").html;

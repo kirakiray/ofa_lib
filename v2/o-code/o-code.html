@@ -1,15 +1,14 @@
-<link rel="stylesheet" href="../libs/highlight/default.min.css">
 <link rel="stylesheet" href="../libs/highlight/hljs-dark.css">
 <style>
     :host {
         display: block;
     }
 
-    .codeEle {
+    pre code {
         padding: 15px;
         font-family: Monaco, Consolas;
     }
 </style>
 <div>
-    <pre><code lang="html" $="codeEle" class="codeEle"></code></pre>
+    <pre><code lang="html" $="codeEle" :class="lang"></code></pre>
 </div>

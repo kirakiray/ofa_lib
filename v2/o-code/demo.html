@@ -83,12 +83,76 @@
     </ul>
     <h2>o-code支持的属性</h2>
     <h3>lang</h3>
-    <p>目前仅支持三个值（三种语言）</p>
+    <p>目前支持</p>
+    <p>o-code主要使用 <a href="https://highlightjs.org/download/"
+            target="_blank">highlightjs</a>添加样式，所以只要highlightjs支持的，o-code都支持；</p>
     <ul>
-        <li>html(默认) 采用html的格式化和高亮</li>
-        <li>js(javascript) 采用javascript的格式化和高亮</li>
-        <li>css 采用css的格式化和高亮</li>
+        <li>html(默认)</li>
+        <li>javascript</li>
+        <li>css </li>
+        <li>python</li>
+        <li>bash</li>
+        <li>Markdown</li>
+        <li>...</li>
     </ul>
+    <h2>其他展示</h2>
+    <h3>javascript</h3>
+    <o-code lang="javascript">
+        <template>
+            // 备注代码
+            console.log("hahaha");
+        </template>
+    </o-code>
+    <h3>python</h3>
+    <o-code lang="python">
+        <template>
+            my_string = "my name is chaitanya baweja"
+
+            # using the title() function of string class
+            new_string = my_string.title()
+            print(new_string)
+            # Output
+            # My Name Is Chaitanya Baweja
+        </template>
+    </o-code>
+    <h3>bash</h3>
+    <o-code lang="bash">
+        <template>
+            #!/bin/bash
+
+            ###### CONFIG
+            ACCEPTED_HOSTS="/root/.hag_accepted.conf"
+            BE_VERBOSE=false
+
+            if [ "$UID" -ne 0 ]
+            then
+            echo "Superuser rights required"
+            exit 2
+            fi
+
+            genApacheConf(){
+            echo -e "# Host ${HOME_DIR}$1/$2 :"
+            }
+        </template>
+    </o-code>
+    <h3>Markdown</h3>
+    <o-code lang="Markdown">
+        <template>
+            # 欢迎使用 Markdown在线编辑器 MdEditor
+
+            **Markdown是一种轻量级的「标记语言」**
+
+
+            ![markdown](https://www.mdeditor.com/images/logos/markdown.png "markdown")
+
+
+            Markdown是一种可以使用普通文本编辑器编写的标记语言，通过简单的标记语法，它可以使普通文本内容具有一定的格式。它允许人们使用易读易写的纯文本格式编写文档，然后转换成格式丰富的HTML页面，Markdown文件的后缀名便是“.md”
+        </template>
+    </o-code>
+
+    <h2>依赖</h2>
+    <p> <a href="https://highlightjs.org/download/" target="_blank">highlightjs</a></p>
+
 </body>
 
 </html>

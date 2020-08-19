@@ -6,8 +6,7 @@ Component(async (load, moduleData) => {
     }
 
     if (!window.hljs) {
-        // srcs.push("./highlight/highlight.min.js");
-        srcs.push("../libs/highlight/highlight.min.js");
+        srcs.push("../libs/highlight -p");
     }
 
     if (srcs.length) {
