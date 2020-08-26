@@ -1,0 +1,35 @@
+<style>
+    :host {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 36px;
+        margin: 0 5px;
+        cursor: pointer;
+    }
+
+    .container {
+        position: relative;
+        padding: 0 10px;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        /* justify-content: center; */
+        justify-content: flex-start;
+        align-items: center;
+        transition: all ease .15s;
+    }
+
+    .container:hover {
+        background-color: var(--hover-item-color);
+    }
+
+    [active] {
+        /* background-color: var(--active-item-color); */
+        cursor: default;
+    }
+</style>
+
+<div class="container" :active="active" :vertical="vertical">
+    <slot></slot>
+</div>

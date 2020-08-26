@@ -1,0 +1,32 @@
+@import url(../common/common.css);
+:host {
+  position: relative;
+  display: flex;
+  color: #484644;
+  user-select: none;
+  font-size: 14px;
+}
+.container {
+  position: relative;
+  display: flex;
+  --hover-item-color: rgba(0, 0, 0, 0.05);
+}
+.container[vertical] {
+  flex-direction: column;
+}
+.container[vertical] .line {
+  left: 5px;
+}
+.container[inverted] {
+  color: #fff;
+  --hover-item-color: rgba(255, 255, 255, 0.15);
+}
+.container .line {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  width: 2px;
+  height: 2px;
+  background-color: var(--fnt-primary);
+  transition: all ease 0.2s;
+}

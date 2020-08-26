@@ -1,0 +1,12 @@
+<link rel="stylesheet" href="./fnt-button.css">
+<style $="colorStyle">
+    /* 设置按钮内的专属样式 */
+</style>
+
+<div class="btn" $="btn" :deepmode="deepmode" :circular="circular" :type="type" :disabled="disabled"
+    :icononly="iconOnly" @click="clickBtn">
+    <div class="bg" $="bg"></div>
+    <div class="btn_container">
+        <slot></slot>
+    </div>
+</div>

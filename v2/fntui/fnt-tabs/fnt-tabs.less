@@ -1,0 +1,44 @@
+@import url(../common/common.css);
+
+:host {
+    position: relative;
+    display: flex;
+    color: #484644;
+    user-select: none;
+    font-size: 14px;
+}
+
+.container {
+    position: relative;
+    display: flex;
+    --hover-item-color: rgba(0, 0, 0, .05);
+    // --active-item-color: rgba(0, 0, 0, .08);
+
+    &[vertical] {
+        flex-direction: column;
+
+        .line {
+            left: 5px;
+            // bottom: auto;
+        }
+    }
+
+    &[inverted] {
+        color: #fff;
+        --hover-item-color: rgba(255, 255, 255, .15);
+        // --active-item-color: rgba(255, 255, 255, .2);
+    }
+
+    .line {
+        position: absolute;
+        left: 0;
+        top: 100%;
+        // bottom: 0;
+        width: 2px;
+        height: 2px;
+        background-color: var(--fnt-primary);
+        transition: all ease .2s;
+        // transition: all ease .2s, left cubic-bezier(0.25, 0.1, 0.38, 1.26) 0.3s, top cubic-bezier(0.25, 0.1, 0.38, 1.26) 0.3s;
+
+    }
+}

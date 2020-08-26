@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>fn-input demo</title>
+    <script src="../../js/ofa.js"> </script>
+    <script>
+        load('@libs/comp-view -p', "./fnt-input");
+    </script>
+</head>
+
+<body>
+    <comp-view id="targetView">
+        <fnt-input></fnt-input>
+    </comp-view>
+    <script>
+        $('#targetView').on("renderend", e => {
+            $('#targetView').options = {
+                props: {
+                    theme: {
+                        options: [{
+                            name: "null",
+                            value: null
+                        }, {
+                            value: "success"
+                        }, {
+                            value: "warn"
+                        }, {
+                            value: "danger"
+                        }, {
+                            value: "#fb4747"
+                        }, {
+                            value: "rgb(255,0,0)"
+                        }]
+                    },
+                    type: {
+                        options: [{
+                            value: "null",
+                            value: null
+                        }, {
+                            value: "password"
+                        }, {
+                            value: "number"
+                        }, {
+                            value: "date"
+                        }, {
+                            value: "time"
+                        }, {
+                            value: "color"
+                        }]
+                    },
+                    maxlength: {
+                        options: [{
+                            name: "null",
+                            value: null
+                        }, {
+                            value: 4
+                        }]
+                    },
+                    placeholder: {
+                        options: [{
+                            name: "null",
+                            value: null
+                        }, {
+                            value: "placeholder content"
+                        }]
+                    },
+                    inverted: {
+                        options: [{
+                            name: "null",
+                            value: null
+                        }, {
+                            name: "true",
+                            value: ""
+                        }]
+                    },
+                    clearable: {
+                        options: [{
+                            name: "null",
+                            value: null
+                        }, {
+                            name: "true",
+                            value: ""
+                        }]
+                    },
+                    disabled: {
+                        options: [{
+                            name: "null",
+                            value: null
+                        }, {
+                            name: "true",
+                            value: ""
+                        }]
+                    }
+                }
+            };
+        })
+    </script>
+
+    <fnt-input maxlength="2" placeholder="maxlength 2"></fnt-input>
+    <br>
+    <br>
+    <fnt-input line-color="success" placeholder="color success"></fnt-input>
+    <br>
+    <br>
+    <fnt-input placeholder="content"></fnt-input>
+    <br>
+    <br>
+    <fnt-input placeholder="password" type="password"></fnt-input>
+    <br>
+    <br>
+    <fnt-input type="number" placeholder="Number"></fnt-input>
+    <br>
+    <br>
+    <fnt-input placeholder="disabled" disabled></fnt-input>
+    <br>
+    <br>
+    <fnt-input placeholder="clearable test" clearable></fnt-input>
+    <br>
+    <br>
+    <fnt-input value="prepend slot">
+        <div slot="prepend" style="width: 26px;text-align: center;">🔍</div>
+    </fnt-input>
+    <br>
+    <br>
+    <fnt-input value="append slot">
+        <div slot="append" style="width: 26px;text-align: center;">🔍</div>
+    </fnt-input>
+    <br>
+    <br>
+</body>
+
+</html>

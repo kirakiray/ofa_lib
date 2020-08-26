@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>fnt-demo</title>
+    <script src="../../js/ofa.js"> </script>
+    <script>
+        load('@libs/comp-view -p', "./fnt-button", "@libs/o-code -p");
+        // load('http://127.0.0.1:5503/v2/comp-view/comp-view.js', "./fnt-button");
+    </script>
+</head>
+
+<body>
+    <comp-view id="targetView">
+        <fnt-button>Click me</fnt-button>
+    </comp-view>
+    <script>
+        $("#targetView").on("renderend", e => {
+            $("#targetView").options = {
+                slotInput: true,
+                props: {
+                    theme: {
+                        options: [{
+                            name: "null",
+                            value: null
+                        }, {
+                            value: "primary"
+                        }, {
+                            value: "success"
+                        }, {
+                            value: "warn"
+                        }, {
+                            value: "danger"
+                        }, {
+                            value: "#fb4747"
+                        }, {
+                            value: "rgb(255,0,0)"
+                        }]
+                    },
+                    type: {
+                        options: [{
+                            name: "null",
+                            value: null
+                        }, {
+                            value: "circle"
+                        }, {
+                            value: "text"
+                        }, {
+                            value: "outlined"
+                        }]
+                    },
+                    disabled: {
+                        options: [{
+                            name: "null",
+                            value: null
+                        }, {
+                            name: "true",
+                            value: ""
+                        }]
+                    },
+                    "icon-only": {
+                        options: [{
+                            name: "null",
+                            valu: null
+                        }, {
+                            name: "true",
+                            value: ""
+                        }]
+                    }
+                }
+            };
+        })
+    </script>
+    <h2>fnt-button使用文档</h2>
+    <h3>引用</h3>
+    <p>在项目引用 <b>ofajs</b> 成功后，导入该目录文件;</p>
+    <o-code>
+        <template>
+            <script src="ofa.js"></script>
+            <script>
+                load("fntui/fnt-button -p");
+            </script>
+            <fnt-button>我是fnt-button</fnt-button>
+        </template>
+    </o-code>
+    <h3>属性</h3>
+    <h4>theme</h4>
+    <p>支持的主题色，可设定颜色色值，或者设置按钮定义的颜色变量</p>
+    <ul>
+        <li>直接设置色值</li>
+        <li>primary</li>
+        <li>success</li>
+        <li>danger</li>
+        <li>warn</li>
+    </ul>
+    <o-code>
+        <template>
+            <fnt-button theme="#6264a7">theme 1</fnt-button>
+            <fnt-button theme="primary">theme 2</fnt-button>
+            <fnt-button theme="success">theme 3</fnt-button>
+            <fnt-button theme="danger">theme 4</fnt-button>
+            <fnt-button theme="warn">theme 5</fnt-button>
+        </template>
+    </o-code>
+    <fnt-button theme="#6264a7">theme 1</fnt-button>
+    <fnt-button theme="primary">theme 2</fnt-button>
+    <fnt-button theme="success">theme 3</fnt-button>
+    <fnt-button theme="danger">theme 4</fnt-button>
+    <fnt-button theme="warn">theme 5</fnt-button>
+    <p>具体颜色变量请查看 flunt/common/common.css</p>
+    <h4>type</h4>
+    <p>展示类型</p>
+    <p>circle 按钮呈现边缘圆形的样式</p>
+    <o-code>
+        <template>
+            <fnt-button type="circle">+</fnt-button>
+            <fnt-button type="circle">Type circle</fnt-button>
+        </template>
+    </o-code>
+    <fnt-button type="circle">+</fnt-button>
+    <fnt-button type="circle">Type circle</fnt-button>
+    <p>text 按钮呈现文本样式</p>
+    <o-code>
+        <template>
+            <fnt-button type="text" theme="#6264a7">Type theme text</fnt-button>
+        </template>
+    </o-code>
+    <fnt-button type="text" theme="#6264a7">Type theme text</fnt-button>
+    <p>outlined 按钮呈现边框模式，默认情况下为白色，需要设定theme可改变颜色</p>
+    <o-code>
+        <template>
+            <div style="background-color: #33344a;">
+                <fnt-button type="outlined" style="margin: 20px;">Type outlined</fnt-button>
+                <fnt-button type="outlined" theme="rgb(255,0,0)" style="margin: 20px;">Type outlined2</fnt-button>
+            </div>
+        </template>
+    </o-code>
+    <div style="background-color: #33344a;">
+        <fnt-button type="outlined" style="margin: 20px;">Type outlined</fnt-button>
+        <fnt-button type="outlined" theme="rgb(255,0,0)" style="margin: 20px;">Type outlined2</fnt-button>
+    </div>
+    <h4>disabled</h4>
+    <p>按钮是否不可用</p>
+    <o-code>
+        <template>
+            <fnt-button disabled>Disabled button</fnt-button>
+        </template>
+    </o-code>
+    <fnt-button disabled>Disabled button</fnt-button>
+    <p>当按钮设置为不可用，click事件将无法触发</p>
+    <h4>icon-only</h4>
+    <p>去除掉按钮的内边距，方便设置纯icon的属性</p>
+    <o-code>
+        <template>
+            <fnt-button icon-only>icon-only</fnt-button>
+        </template>
+    </o-code>
+    <fnt-button icon-only>icon-only</fnt-button>
+    <h3>事件</h3>
+    <h4>click</h4>
+    <p>按钮点击事件</p>
+    <o-code>
+        <template>
+            <fnt-button id="testBtn1">测试按钮1</fnt-button>
+            <script>
+                $("#testBtn1").on("click", e => {
+                    alert('点击了testBtn1');
+                });
+            </script>
+        </template>
+    </o-code>
+    <fnt-button id="testBtn1">测试按钮1</fnt-button>
+    <script>
+        $("#testBtn1").on("click", e => {
+            alert('点击了testBtn1');
+        });
+    </script>
+</body>
+
+</html>

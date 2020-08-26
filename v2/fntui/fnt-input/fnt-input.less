@@ -1,0 +1,105 @@
+@import url(../common/common.css);
+
+:host {
+    display: inline-block;
+    width: 200px;
+    height: 32px;
+    font-size: 14px;
+}
+
+.container {
+    position: relative;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    font-size: inherit;
+    background-color: rgb(243, 242, 241);
+
+    &[clearable] {
+        .mainInput {
+            width: calc(100% - 16px);
+        }
+    }
+
+    &[inverted] {
+        background-color: #ffffff;
+    }
+
+    .input_con {
+        flex: 1;
+        height: 100%;
+    }
+
+    .mark_con {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-bottom: 2px;
+    }
+}
+
+
+.clear {
+    position: absolute;
+    right: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    width: 16px;
+    height: 100%;
+    font-size: 16px;
+    cursor: pointer;
+    animation: clear_anime ease .3s;
+    overflow: hidden;
+}
+
+@keyframes clear_anime {
+    0% {
+        width: 0;
+        opacity: 0;
+    }
+
+    100% {
+        width: 16px;
+        opacity: 1;
+    }
+}
+
+.mainInput {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    padding: 0 5px 2px;
+    border: none;
+    font-size: inherit;
+    background-color: transparent;
+    outline: none;
+
+    &::placeholder {
+        font-size: 12px;
+    }
+
+    &:focus+.line {
+        .inner_line {
+            width: 100%;
+        }
+    }
+}
+
+.line {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    display: flex;
+    justify-content: center;
+}
+
+.inner_line {
+    // width: 100%;
+    width: 0;
+    height: 100%;
+    background-color: var(--fnt-primary);
+    transition: all ease .15s;
+}

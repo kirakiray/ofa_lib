@@ -1,0 +1,17 @@
+<link rel="stylesheet" href="./fnt-input.css">
+<div class="container" :clearable="clearable" :inverted="inverted">
+    <div class="mark_con">
+        <slot name="prepend"></slot>
+    </div>
+    <div class="input_con">
+        <input $="mainInput" :type="type" :maxlength="maxlength" class="mainInput" :placeholder="placeholder"
+            :disabled="disabled" xv-model="value">
+        <div class="line">
+            <div class="inner_line" $="innerLine"></div>
+        </div>
+        <div class="clear" xv-show="clearable !== null && value && value.length" @click="value = ''">×</div>
+    </div>
+    <div class="mark_con">
+        <slot name="append"></slot>
+    </div>
+</div>

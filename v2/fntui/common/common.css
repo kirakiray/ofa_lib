@@ -1,0 +1,7 @@
+:host {
+    --fnt-primary: #6264a7;
+    --fnt-success: #237B4B;
+    --fnt-danger: #8E192E;
+    --fnt-warn: #FFAA44;
+    font-family: ProximaNova, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>fnt-tabs test</title>
+    <script src="../../js/ofa.js"> </script>
+    <script>
+        load("./fnt-tabs", '@libs/comp-view -p');
+        // load("./fnt-tabs", 'http://127.0.0.1:5503/v2/comp-view/comp-view');
+    </script>
+</head>
+
+<body>
+    <comp-view id="targetView">
+        <fnt-tabs>
+            <fnt-tabs-item>
+                Profile
+            </fnt-tabs-item>
+            <fnt-tabs-item active>
+                My account
+            </fnt-tabs-item>
+            <fnt-tabs-item>
+                Messages
+            </fnt-tabs-item>
+            <fnt-tabs-item>
+                Logout
+            </fnt-tabs-item>
+        </fnt-tabs>
+    </comp-view>
+    <script>
+        $('#targetView').on("renderend", e => {
+            $('#targetView').options = {
+                props: {
+                    theme: {
+                        options: [{
+                            name: "null",
+                            value: null
+                        }, {
+                            value: "success"
+                        }, {
+                            value: "warn"
+                        }, {
+                            value: "danger"
+                        }, {
+                            value: "#fb4747"
+                        }, {
+                            value: "rgb(255,0,0)"
+                        }]
+                    },
+                    vertical: {
+                        options: [{
+                            name: "null",
+                            value: null
+                        }, {
+                            name: "true",
+                            value: ""
+                        }]
+                    },
+                    inverted: {
+                        options: [{
+                            name: "null",
+                            value: null
+                        }, {
+                            name: "true",
+                            value: ""
+                        }]
+                    }
+                }
+            };
+        })
+    </script>
+
+    <fnt-tabs vertical>
+        <fnt-tabs-item>
+            Profile
+        </fnt-tabs-item>
+        <fnt-tabs-item active>
+            My account
+        </fnt-tabs-item>
+        <fnt-tabs-item>
+            Messages
+        </fnt-tabs-item>
+        <fnt-tabs-item>
+            Logout
+        </fnt-tabs-item>
+    </fnt-tabs>
+</body>
+
+</html>

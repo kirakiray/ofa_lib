@@ -1,0 +1,116 @@
+@import url(../common/common.css);
+
+:host {
+    position: relative;
+    display: inline-block;
+    font-size: 13px;
+    color: #252423;
+    font-weight: 500;
+    -webkit-user-select: none;
+    user-select: none;
+    min-height: 29px;
+    min-width: 29px;
+}
+
+.btn {
+    box-sizing: border-box;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 0.5em 0.8em;
+    border: rgb(225, 223, 221) solid 1px;
+    border-radius: 2px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0.4em 0.8em -0.14em;
+    cursor: pointer;
+    transition: all ease .15s;
+
+    /* background-color: #585a96; */
+    &[type="circle"] {
+        border-radius: 1000px;
+
+        .bg {
+            border-radius: 1000px;
+        }
+    }
+
+    &[type="text"] {
+        box-shadow: none;
+        border: none;
+
+        &.bg {
+            background-color: transparent;
+        }
+
+        &:hover .bg,
+        &:active .bg {
+            background-color: transparent;
+        }
+    }
+
+    &[disabled] {
+        color: #c8c6c4;
+        background-color: #edebe9;
+        border-color: #edebe9;
+        cursor: not-allowed;
+        box-shadow: none;
+
+        &:hover .bg,
+        &:active .bg {
+            background-color: transparent;
+        }
+    }
+
+    &[icononly] {
+        padding: 0 !important;
+    }
+}
+
+.bg {
+    z-index: 1;
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.btn_container {
+    position: relative;
+    z-index: 2;
+}
+
+.btn {
+    &:hover {
+        .bg {
+            background-color: rgba(0, 0, 0, .07);
+        }
+    }
+
+    &:active {
+        box-shadow: none;
+
+        .bg {
+            background-color: rgba(0, 0, 0, .117);
+        }
+    }
+}
+
+.btn[deepmode="1"] {
+    color: #fff;
+
+    &:hover {
+        .bg {
+            background-color: rgba(0, 0, 0, .1);
+        }
+    }
+
+    &:active {
+        .bg {
+            background-color: rgba(0, 0, 0, .2);
+        }
+    }
+}
