@@ -119,8 +119,8 @@ Component(async (load) => {
                     let codeText = this._mainEle.ele.outerHTML;
 
                     // 去除渲染属性
-                    codeText = codeText.replace(/ xv-ele="1"/g, "");
-                    codeText = codeText.replace(/ xv-ele/g, "");
+                    codeText = codeText.replace(/ x-ele="1"/g, "");
+                    codeText = codeText.replace(/ x-ele/g, "");
 
                     // 去除空属性
                     codeText = codeText.replace(/=""/g, "");
